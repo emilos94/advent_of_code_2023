@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include "string.h"
-#include "base.h"
+#include "core.h"
 
 struct FileResult {
     String* file_text;
