@@ -8,7 +8,8 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${workspaceFolder}/src/*.c",
-                "${workspaceFolder}/src/util/*.c",
+                "${workspaceFolder}/src/core/*.c",
+                "${workspaceFolder}/src/datastructures/*.c",
                 "-o",
                 "${workspaceFolder}/build/${fileBasenameNoExtension}.exe"
             ],

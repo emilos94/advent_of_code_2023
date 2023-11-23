@@ -8,7 +8,7 @@ void _arraylist_swap(ArrayList* list, uint32_t i, uint32_t j);
 
 ArrayList* arraylist_create(uint32_t capacity, uint32_t element_byte_size) {
     ArrayList* list = malloc(sizeof(ArrayList));
-    list->data = malloc(capacity * element_byte_size);
+    list->data = malloc(sizeof(char) * capacity * element_byte_size);
     list->capacity = capacity;
     list->element_byte_size = element_byte_size;
     list->count = 0;
@@ -22,7 +22,8 @@ void arraylist_add(ArrayList* list, void* entry) {
         list->data = realloc(list->data, list->capacity * list->element_byte_size);
     }
     
-    memcpy(list->data + list->count * list->element_byte_size, entry, list->element_byte_size);
+    void* ptr = list->data + (list->count * list->element_byte_size);
+    memcpy(ptr, entry, list->element_byte_size);
     list->count++;
 }
 
@@ -62,22 +63,22 @@ void arraylist_remove(ArrayList* list, uint32_t index) {
     }
 
     // move last item to removed index spot
-    char* ptr_to_remove = list->data + index * list->element_byte_size;
-    char* ptr_last_element = list->data + (list->count-1) * list->element_byte_size;
+    void* ptr_to_remove = list->data + index * list->element_byte_size;
+    void* ptr_last_element = list->data + (list->count-1) * list->element_byte_size;
 
     memcpy(ptr_to_remove, ptr_last_element, list->element_byte_size);
     list->count--;
 }
 
-char* arraylist_popback(ArrayList* list) {
+void* arraylist_popback(ArrayList* list) {
     assert(list->count > 0);
 
-    char* ptr = list->data + (list->count-1) * list->element_byte_size;
+    void* ptr = list->data + (list->count-1) * list->element_byte_size;
     list->count--;
     return ptr;
 }
 
-char* arraylist_peekback(ArrayList* list) {
+void* arraylist_peekback(ArrayList* list) {
     assert(list->count > 0);
 
     return list->data + (list->count-1) * list->element_byte_size;
@@ -109,7 +110,7 @@ void _arraylist_sort(ArrayList* list, int low, int high, int (comparison_func)(v
 }
 
 uint32_t _arraylist_sort_partition(ArrayList* list, int low, int high,  int (comparison_func)(void*, void*)) {
-    char* pivot = arraylist_get(list, high);
+    void* pivot = arraylist_get(list, high);
 
     int tmp_pivot = low - 1;
 
@@ -134,10 +135,10 @@ void _arraylist_swap(ArrayList* list, uint32_t i, uint32_t j) {
         return;
     }
 
-    char* tmp = malloc(sizeof(char) * list->element_byte_size);
+    void* tmp = malloc(sizeof(char) * list->element_byte_size);
 
-    char* ptr_i = arraylist_get(list, i);
-    char* ptr_j = arraylist_get(list, j);
+    void* ptr_i = arraylist_get(list, i);
+    void* ptr_j = arraylist_get(list, j);
 
     memcpy(tmp, ptr_i, list->element_byte_size);
     memcpy(ptr_i, ptr_j, list->element_byte_size);

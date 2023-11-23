@@ -3,10 +3,15 @@
 #include "core/file_reader.h"
 
 int main(void) {
-    FileResult result = file_readstring("res/test.txt");
+    FileLineResult result = file_readlines("res/test.txt");
 
     if (result.valid) {
-        printf("Read file!\n\n%s\n", result.file_text);
+        String* line1 = arraylist_get(result.file_lines, 0);
+        String* line2 = arraylist_get(result.file_lines, 1);
+        int x = 10;
+        ARRAYLIST_FOREACH(result.file_lines, String, line) {
+            printf("%s\n", line->text);
+        }
     }
     else {
         printf("Failed to read file");
