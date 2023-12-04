@@ -24,6 +24,9 @@ ArrayList* parse_cubeset_list(String* game_cubesets_str) {
     ArrayList* game_cubesets = string_split(game_cubesets_str, ';');
     ARRAYLIST_FOREACH(game_cubesets, String, cubeset_str) {
         CubeSet result;
+        result.red = -1;
+        result.green = -1;
+        result.blue = -1;
         ArrayList* cubesets = string_split(cubeset_str, ',');
 
         ARRAYLIST_FOREACHI(cubesets, idx, String, cubeset) {
@@ -67,6 +70,47 @@ int part_one_solve(ArrayList* games) {
     return total;
 }
 
+CubeSet find_minimum_cubeset(Game* game) {
+    CubeSet min;
+    min.red = -1;
+    min.blue = -1;
+    min.green = -1;
+
+    ARRAYLIST_FOREACH(game->cubesets, CubeSet, cubeset) {
+        if (min.red == -1 || cubeset->red > min.red && cubeset->red > -1) {
+            min.red = cubeset->red;
+        }
+        if (min.blue == -1 || cubeset->blue > min.blue && cubeset->blue > -1) {
+            min.blue = cubeset->blue;
+        }
+        if (min.green == -1 || cubeset->green > min.green && cubeset->green > -1) {
+            min.green = cubeset->green;
+        }
+    }
+    
+    return min;
+}
+
+int part_two_solve(ArrayList* games) {
+    int total = 0;
+    ARRAYLIST_FOREACH(games, Game, game) {
+        CubeSet min_cubeset = find_minimum_cubeset(game);
+        int power = 1;
+        if (min_cubeset.red > -1) {
+            power *= min_cubeset.red;
+        }
+        if (min_cubeset.blue > -1) {
+            power *= min_cubeset.blue;
+        }
+        if (min_cubeset.green > -1) {
+            power *= min_cubeset.green;
+        }
+        total += power;
+    }
+
+    return total;
+}
+
 int main(void) {
     FileLineResult result = file_readlines("res/day02.txt");
 
@@ -85,6 +129,8 @@ int main(void) {
     }
 
     int part_one = part_one_solve(games);
+    int part_two = part_two_solve(games);
 
     printf("part one: %d\n", part_one);
+    printf("part two: %d\n", part_two);
 }
