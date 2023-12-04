@@ -24,6 +24,20 @@ String* string_create_lit(char* characters) {
     return str;
 }
 
+
+b8 string_startswith(char* str, char* lit) {
+    int offset = 0;
+    while(str[offset] != '\0' && lit[offset] != '\0') {
+        if (str[offset] != lit[offset]) {
+            return false;
+        }
+
+        offset++;
+    }
+
+    return str[offset] == lit[offset] || lit[offset] == '\0';
+}
+
 void string_free(String* str) {
     free(str->text);
     free(str);

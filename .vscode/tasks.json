@@ -7,9 +7,9 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/src/*.c",
                 "${workspaceFolder}/src/core/*.c",
                 "${workspaceFolder}/src/datastructures/*.c",
+                "${file}",
                 "-o",
                 "${workspaceFolder}/build/${fileBasenameNoExtension}.exe"
             ],
