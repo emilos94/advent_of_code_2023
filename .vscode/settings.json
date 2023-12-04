@@ -6,6 +6,7 @@
         "string_view": "c",
         "typeinfo": "c",
         "type_traits": "c",
-        "random": "c"
+        "random": "c",
+        "arraylist.h": "c"
     }
 }

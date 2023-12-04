@@ -38,7 +38,49 @@ b8 string_startswith(char* str, char* lit) {
     return str[offset] == lit[offset] || lit[offset] == '\0';
 }
 
+
+ArrayList* string_split(String* str, char c) {
+    ArrayList* split_results = arraylist_create(10, sizeof(String));
+
+    int last_split_index = 0;
+    for (int i = 0; i < str->length; i++) {
+        if (str->text[i] == c && last_split_index < i) {
+            String* new_str = string_create(str->text + last_split_index, i - last_split_index);
+            arraylist_add(split_results, new_str);
+            last_split_index = i + 1;
+            free(new_str);
+        }
+    }
+
+    if (last_split_index < str->length - 1) {
+        String* new_str = string_create(str->text + last_split_index, str->length - last_split_index);
+        arraylist_add(split_results, new_str);
+        free(new_str);
+    }
+
+    return split_results;
+}
+
+
+b8 string_contains(String* str, char* lit) {
+    for(int i = 0; i < str->length; i++) {
+        if (string_startswith(str->text + i, lit)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void string_free(String* str) {
     free(str->text);
     free(str);
+}
+
+void string_arraylist_free(ArrayList* str_list) {
+    ARRAYLIST_FOREACH(str_list, String, str) {
+        free(str->text);
+    }
+
+    free(str_list);
 }

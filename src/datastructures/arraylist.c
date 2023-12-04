@@ -99,6 +99,17 @@ void arraylist_sort(ArrayList* list, int (comparison_func)(void*, void*)) {
 }
 
 
+b8 arraylist_anymatch(ArrayList* list, b8 (*predicate)(void*)) {
+    ARRAYLIST_FOREACH(list, void, entry) {
+        if ((*predicate)(entry)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 void _arraylist_sort(ArrayList* list, int low, int high, int (comparison_func)(void*, void*)) {
     if (low >= high || low < 0) {
         return;
