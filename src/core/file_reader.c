@@ -44,7 +44,7 @@ FileLineResult file_readlines(char* path) {
 
     int line_start = 0;
     for (int i = 0; i < length; i++) {
-        if (buffer[i] == '\n') {
+        if (buffer[i] == '\n' || buffer[i] == '\r' && i != length-1 && buffer[i] == '\n' ) {
             String* line = string_create(buffer + line_start, i - line_start);
             line_start = i + 1;
             arraylist_add(lines, line);
