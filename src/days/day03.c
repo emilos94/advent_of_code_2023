@@ -9,8 +9,9 @@ b8 is_digit(char c);
 ArrayList* parse_schematic_numbers(ArrayList* file_lines);
 b8 is_symbol_adjacent(SchematicNumber* schematic_number, ArrayList* files_lines);
 b8 is_symbol(ArrayList* file_lines, int x, int y);
+int gear_ratio_if_two_adjacent(ArrayList* schematic_numbers, int gear_x, int gear_y);
 int part_one_solve(ArrayList* schematic_numbers, ArrayList* file_lines);
-int part_two_solve();
+int part_two_solve(ArrayList* schematic_numbers, ArrayList* file_lines);
 
 int main(void) {
     FileLineResult result = file_readlines("res/day03.txt");
@@ -18,8 +19,10 @@ int main(void) {
     ArrayList* schematic_numbers = parse_schematic_numbers(result.file_lines);
 
     int part_one = part_one_solve(schematic_numbers, result.file_lines);
-
     printf("part one: %d\n", part_one);
+
+    int part_two = part_two_solve(schematic_numbers, result.file_lines);
+    printf("part two: %d\n", part_two);
 
     arraylist_free(schematic_numbers);  
     string_arraylist_free(result.file_lines);
@@ -37,6 +40,36 @@ int part_one_solve(ArrayList* schematic_numbers, ArrayList* file_lines) {
     }
 
     return sum;
+}
+
+int part_two_solve(ArrayList* schematic_numbers, ArrayList* file_lines) {
+    int gear_ratio_sum = 0;
+    ARRAYLIST_FOREACHI(file_lines, line_num, String, line) {
+        for (int i = 0; i < line->length; i++) {
+            if (line->text[i] == '*') {
+                gear_ratio_sum += gear_ratio_if_two_adjacent(schematic_numbers, i, line_num);
+            }
+        }
+    }
+    return gear_ratio_sum;
+}
+
+int gear_ratio_if_two_adjacent(ArrayList* schematic_numbers, int gear_x, int gear_y) {
+    int count = 0, gear_ratio = 1;
+    ARRAYLIST_FOREACH(schematic_numbers, SchematicNumber, number) {
+        b8 is_adjacent = gear_x >= number->x_min - 1 && gear_x <= number->x_max + 1 &&
+            gear_y >= number->y - 1 && gear_y <= number->y + 1;
+        if (is_adjacent) {
+            count++;
+            gear_ratio *= number->number;
+        }
+    }
+
+    if (count == 2) {
+        return gear_ratio;
+    }
+
+    return 0;
 }
 
 b8 is_symbol_adjacent(SchematicNumber* schematic_number, ArrayList* files_lines) {
