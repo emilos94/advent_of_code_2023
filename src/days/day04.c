@@ -21,6 +21,9 @@ int main(void) {
     int part_one = part_one_solve(cards);
     printf("part one: %d\n", part_one);
 
+    int part_two = part_two_solve(cards);
+    printf("part two: %d\n", part_two);
+
     return 1;
 }
 
@@ -47,6 +50,45 @@ int part_one_solve(ArrayList* cards) {
     return sum_points;
 }
 
+int part_two_solve(ArrayList* cards) {
+    ArrayList* instances = arraylist_create(cards->count, sizeof(int));
+    {
+        int value = 1;
+        for(int i = 0; i < cards->count; i++) {
+            arraylist_add(instances, &value);
+        }
+    }
+    {
+        ARRAYLIST_FOREACH(cards, Card, card) {
+            int matching_numbers = 0;
+            ARRAYLIST_FOREACHI(card->my_numbers, j, int, my_number) {
+                ARRAYLIST_FOREACHI(card->winning_numbers, k, int, winning_number) {
+                    if (*my_number == *winning_number) {
+                        matching_numbers++;
+                    }
+                }
+            }
+
+            int instance_count = *(int*)arraylist_get(instances, card->id - 1);
+            for (int i = 0; i < instance_count; i++) {
+                for(int m = card->id; m < card->id + matching_numbers && m < cards->count; m++) {
+                    int* instance_number = arraylist_get(instances, m);
+                    (*instance_number)++;
+                }
+            }
+        }
+    }
+
+    int scratch_cards_total = 0;
+
+    ARRAYLIST_FOREACH(instances, int, instance_count) {
+        scratch_cards_total += *instance_count;
+    }
+
+    arraylist_free(instances);
+
+    return scratch_cards_total;
+}
 
 ArrayList* parse_cards(ArrayList* file_lines) {
     ArrayList* cards = arraylist_create(file_lines->count, sizeof(Card));
